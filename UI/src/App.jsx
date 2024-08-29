@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import AddPossessionsForm from "./Components/AddPossessionsForm";
+import AddPossessionModal from "./Components/AddPossessionModal";
 import EditPossessionForm from "./Components/EditPossessionForm"; // Importation du modal de modification
 import Flux from "../../models/possessions/Flux";
 import Possession from "../../models/possessions/Possession";
@@ -89,7 +89,8 @@ export default function App() {
   };
 
   const handlePossessionAdded = (newPossession) => {
-    setTab([...tab, newPossession]);
+    setTab([...tab, newPossession]); // Mise à jour de l'état avec la nouvelle possession
+    setShowModal(false); // Ferme le modal après l'ajout
   };
 
   const handleEditClick = (item) => {
@@ -111,14 +112,15 @@ export default function App() {
 
   // Nouvelle fonction pour fermer une possession (set dateFin à la date actuelle)
   const handleClosePossession = (libelle) => {
-    const currentDate = new Date().toISOString().split("T")[0]; // Date actuelle
+    const currentDate = new Date();
+    const formattedDate = currentDate.toISOString().split("T")[0]; // Format ISO pour la date actuelle
 
     fetch(`http://localhost:4000/possession/${libelle}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ dateFin: currentDate }),
+      body: JSON.stringify({ dateFin: formattedDate }),
     })
       .then((response) => {
         if (!response.ok) {
@@ -128,19 +130,52 @@ export default function App() {
       })
       .then((updatedPossession) => {
         // Mise à jour de l'état local avec la possession mise à jour
-        handlePossessionUpdated(updatedPossession);
+        const updatedTab = tab.map((item) => {
+          if (item.libelle === updatedPossession.libelle) {
+            let valeurApresAmortissement;
 
-        // Recalculer la valeur actuelle
-        const updatedTab = tab.map((item) =>
-          item.libelle === updatedPossession.libelle
-            ? {
-                ...updatedPossession,
-                valeurActuelle: item.getValeur(new Date(currentDate)),
-              }
-            : item
+            if (item.type === "Bien Materiel") {
+              // Recalculer la valeur actuelle avec la méthode getValeurApresAmortissement
+              valeurApresAmortissement = new Possession(
+                item.possesseur,
+                item.libelle,
+                item.valeur,
+                new Date(item.dateDebut),
+                currentDate, // Utilisation de la date actuelle
+                item.tauxAmortissement
+              ).getValeurApresAmortissement(currentDate);
+            } else {
+              // Recalculer la valeur actuelle avec la méthode getValeur
+              const flux = new Flux(
+                item.possesseur,
+                item.libelle,
+                item.valeurConstante,
+                new Date(item.dateDebut),
+                currentDate, // Utilisation de la date actuelle
+                item.tauxAmortissement,
+                item.jour
+              );
+              valeurApresAmortissement = flux.getValeur(currentDate);
+            }
+
+            return {
+              ...updatedPossession,
+              valeurActuelle: valeurApresAmortissement, // Mettre à jour la valeur actuelle recalculée
+              dateFin: formattedDate, // Mettre à jour la date de fin
+            };
+          } else {
+            return item;
+          }
+        });
+
+        setTab(updatedTab); // Mise à jour de l'état local
+
+        // Recalculer le total de la valeur actuelle
+        const total = updatedTab.reduce(
+          (sum, item) => sum + item.valeurActuelle,
+          0
         );
-
-        setTab(updatedTab);
+        setTotalValeurActuelle(total);
       })
       .catch((error) => {
         console.error("Erreur lors de la fermeture de la possession:", error);
@@ -156,7 +191,7 @@ export default function App() {
         </button>
       </header>
 
-      <AddPossessionsForm
+      <AddPossessionModal
         show={showModal}
         handleClose={handleCloseModal}
         onPossessionAdded={handlePossessionAdded}
@@ -176,35 +211,36 @@ export default function App() {
         <table className="table table-bordered table-hover table-striped">
           <thead className="thead-dark">
             <tr>
-              <th>Libellé</th>
-              <th>Valeur initiale</th>
-              <th>Date début</th>
-              <th>Date fin</th>
-              <th>Amortissement</th>
-              <th>Valeur actuelle</th>
-              <th>Actions</th> {/* Ajouter une colonne pour les actions */}
+              <th className="text-center">Libellé</th>
+              <th className="text-center">Valeur initiale</th>
+              <th className="text-center">Date début</th>
+              <th className="text-center">Date fin</th>
+              <th className="text-center">Amortissement</th>
+              <th className="text-center">Valeur actuelle</th>
+              <th className="text-center">Actions</th>{" "}
+              {/* Ajouter une colonne pour les actions */}
             </tr>
           </thead>
           <tbody>
             {tab.map((item, index) => (
               <tr key={index}>
-                <td>{item.libelle}</td>
-                <td>
+                <td className="text-center">{item.libelle}</td>
+                <td className="text-center">
                   {item.valeur
                     ? item.valeur
                     : item.valeurConstante < 0
                     ? item.valeurConstante * -1
                     : item.valeurConstante}
                 </td>
-                <td>{item.dateDebut}</td>
-                <td>{item.dateFin || "Non définie"}</td>
-                <td>{item.tauxAmortissement}</td>
-                <td>
+                <td className="text-center">{item.dateDebut}</td>
+                <td className="text-center">{item.dateFin || "Non définie"}</td>
+                <td className="text-center">{item.tauxAmortissement}</td>
+                <td className="text-center">
                   {item.valeurActuelle < 0
                     ? item.valeurActuelle * -1
                     : item.valeurActuelle || 0}
                 </td>
-                <td>
+                <td className="text-center">
                   <button
                     className="btn btn-warning"
                     onClick={() => handleEditClick(item)}
@@ -212,7 +248,7 @@ export default function App() {
                     Modifier
                   </button>
                   <button
-                    className="btn btn-danger ml-2"
+                    className="btn btn-danger mx-2"
                     onClick={() => handleClosePossession(item.libelle)}
                   >
                     Fermer

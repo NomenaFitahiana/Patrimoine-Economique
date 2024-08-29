@@ -41,8 +41,8 @@ app.get("/possession", (req, res) => {
 // Route pour créer une nouvelle possession
 app.post("/possession", (req, res) => {
   const {
-    possesseurNom,
-    type, // Assurez-vous que le champ `type` est présent
+    possesseurNom, // Assurez-vous que ce champ est correctement transmis
+    type,
     libelle,
     valeur,
     dateDebut,
@@ -58,8 +58,8 @@ app.post("/possession", (req, res) => {
   }
 
   const newPossession = {
-    possesseur: { nom: possesseurNom },
-    type: type || "Bien Materiel", // Définissez un type par défaut si non fourni
+    possesseur: { nom: possesseurNom }, // Assurez-vous que ce champ correspond au modèle de données
+    type: type || "Bien Materiel",
     libelle,
     valeur,
     dateDebut,
@@ -77,7 +77,7 @@ app.post("/possession", (req, res) => {
 
   if (patrimoine) {
     patrimoine.data.possessions.push(newPossession);
-    writeData(data); // Écrire les données mises à jour dans le fichier
+    writeData(data); // Sauvegarder les nouvelles données
     res.status(201).json(newPossession);
   } else {
     res

@@ -27,7 +27,10 @@ export default function AddPossessionModal({
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:4000/possession", formState) // Envoi des données au serveur
+      .post("http://localhost:4000/possession", {
+        ...formState,
+        possesseurNom: "John Doe", // Inclure le nom du possesseur si nécessaire
+      }) // Envoi des données au serveur
       .then((response) => {
         console.log("Possession ajoutée:", response.data);
         onPossessionAdded(response.data); // Notifie le parent de la nouvelle possession

@@ -13,21 +13,21 @@ function EditPossessionForm({
   onPossessionUpdated,
 }) {
   const [libelle, setLibelle] = useState(possession.libelle || "");
-  const [valeur, setValeur] = useState(possession.valeur || "");
-  const [dateDebut, setDateDebut] = useState(possession.dateDebut || "");
+  // const [valeur, setValeur] = useState(possession.valeur || "");
+  // const [dateDebut, setDateDebut] = useState(possession.dateDebut || "");
   const [dateFin, setDateFin] = useState(possession.dateFin || "");
-  const [tauxAmortissement, setTauxAmortissement] = useState(
-    possession.tauxAmortissement || ""
-  );
-  const [type, setType] = useState(possession.type || "");
+  // const [tauxAmortissement, setTauxAmortissement] = useState(
+  // possession.tauxAmortissement || ""
+  // );
+  // const [type, setType] = useState(possession.type || "");
 
   useEffect(() => {
     setLibelle(possession.libelle || "");
-    setValeur(possession.valeur || "");
-    setDateDebut(possession.dateDebut || "");
+    // setValeur(possession.valeur || "");
+    // setDateDebut(possession.dateDebut || "");
     setDateFin(possession.dateFin || "");
-    setTauxAmortissement(possession.tauxAmortissement || "");
-    setType(possession.type || "");
+    // setTauxAmortissement(possession.tauxAmortissement || "");
+    // setType(possession.type || "");
   }, [possession]);
 
   const handleSubmit = async (e) => {
@@ -35,12 +35,12 @@ function EditPossessionForm({
 
     const updatedData = {};
     if (libelle !== possession.libelle) updatedData.libelle = libelle;
-    if (valeur !== possession.valeur) updatedData.valeur = valeur;
-    if (dateDebut !== possession.dateDebut) updatedData.dateDebut = dateDebut;
+    // if (valeur !== possession.valeur) updatedData.valeur = valeur;
+    // if (dateDebut !== possession.dateDebut) updatedData.dateDebut = dateDebut;
     if (dateFin !== possession.dateFin) updatedData.dateFin = dateFin;
-    if (tauxAmortissement !== possession.tauxAmortissement)
-      updatedData.tauxAmortissement = tauxAmortissement;
-    if (type !== possession.type) updatedData.type = type;
+    // if (tauxAmortissement !== possession.tauxAmortissement)
+    // updatedData.tauxAmortissement = tauxAmortissement;
+    // if (type !== possession.type) updatedData.type = type;
 
     if (Object.keys(updatedData).length === 0) {
       console.log("Aucune modification apportée.");
@@ -108,23 +108,23 @@ function EditPossessionForm({
             />
           </Form.Group>
 
-          <Form.Group controlId="formValeur">
+          {/* <Form.Group controlId="formValeur">
             <Form.Label>Valeur</Form.Label>
             <Form.Control
               type="number"
               value={valeur}
               onChange={(e) => setValeur(e.target.value)}
             />
-          </Form.Group>
+          </Form.Group> */}
 
-          <Form.Group controlId="formDateDebut">
+          {/* <Form.Group controlId="formDateDebut">
             <Form.Label>Date de début</Form.Label>
             <Form.Control
               type="date"
               value={dateDebut}
               onChange={(e) => setDateDebut(e.target.value)}
             />
-          </Form.Group>
+          </Form.Group> */}
 
           <Form.Group controlId="formDateFin">
             <Form.Label>Date de fin</Form.Label>
@@ -135,7 +135,7 @@ function EditPossessionForm({
             />
           </Form.Group>
 
-          <Form.Group controlId="formTauxAmortissement">
+          {/* <Form.Group controlId="formTauxAmortissement">
             <Form.Label>Taux d'Amortissement</Form.Label>
             <Form.Control
               type="number"
@@ -143,16 +143,16 @@ function EditPossessionForm({
               value={tauxAmortissement}
               onChange={(e) => setTauxAmortissement(e.target.value)}
             />
-          </Form.Group>
+          </Form.Group> */}
 
-          <Form.Group controlId="formType">
+          {/* <Form.Group controlId="formType">
             <Form.Label>Type</Form.Label>
             <Form.Select value={type} onChange={(e) => setType(e.target.value)}>
               <option value="">Sélectionnez un type</option>
               <option value="Flux">Flux</option>
               <option value="Bien Materiel">Bien Materiel</option>
             </Form.Select>
-          </Form.Group>
+          </Form.Group> */}
 
           <Button variant="primary" type="submit" className="mt-2">
             Enregistrer les modifications
