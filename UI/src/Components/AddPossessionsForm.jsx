@@ -8,12 +8,11 @@ export default function AddPossessionModal({
   onPossessionAdded,
 }) {
   const [formState, setFormState] = useState({
-    possesseurNom: "",
+    type: "",
     libelle: "",
     valeur: "",
     dateDebut: "",
     tauxAmortissement: "",
-    jour: "",
     valeurConstante: "",
   });
 
@@ -28,7 +27,7 @@ export default function AddPossessionModal({
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:4000/possession", formState)
+      .post("http://localhost:4000/possession", formState) // Envoi des données au serveur
       .then((response) => {
         console.log("Possession ajoutée:", response.data);
         onPossessionAdded(response.data); // Notifie le parent de la nouvelle possession
@@ -46,12 +45,12 @@ export default function AddPossessionModal({
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="possesseurNom">
-            <Form.Label>Nom du possesseur</Form.Label>
+          <Form.Group controlId="type">
+            <Form.Label>Type</Form.Label>
             <Form.Control
               type="text"
-              name="possesseurNom"
-              value={formState.possesseurNom}
+              name="type"
+              value={formState.type}
               onChange={handleChange}
               required
             />
@@ -95,15 +94,7 @@ export default function AddPossessionModal({
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group controlId="jour">
-            <Form.Label>Jour</Form.Label>
-            <Form.Control
-              type="number"
-              name="jour"
-              value={formState.jour}
-              onChange={handleChange}
-            />
-          </Form.Group>
+
           <Form.Group controlId="valeurConstante">
             <Form.Label>Valeur Constante</Form.Label>
             <Form.Control
