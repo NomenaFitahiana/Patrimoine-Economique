@@ -17,7 +17,7 @@
           "possesseur": {
             "nom": "John Doe"
           },
-          "libelle": "BienMatériel1",
+          "libelle": "BienMatériel",
           "valeur": "52300000",
           "dateDebut": "2023-12-25T00:00:00.000Z",
           "dateFin": "2024-08-29",
@@ -85,32 +85,6 @@
           "tauxAmortissement": null,
           "jour": 2,
           "valeurConstante": -300000
-        },
-        {
-          "possesseur": {
-            "nom": "John Doe"
-          },
-          "type": "Bien Materiel",
-          "libelle": "Moto",
-          "valeur": "200000",
-          "dateDebut": "2024-08-29",
-          "tauxAmortissement": "2",
-          "jour": null,
-          "valeurConstante": null,
-          "dateFin": "2024-08-29"
-        },
-        {
-          "possesseur": {
-            "nom": "John Doe"
-          },
-          "type": "Flux",
-          "libelle": "Job",
-          "valeur": "100000",
-          "dateDebut": "2024-08-29",
-          "tauxAmortissement": null,
-          "jour": null,
-          "valeurConstante": null,
-          "dateFin": "2024-08-29"
         }
       ]
     }

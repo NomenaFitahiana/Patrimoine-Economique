@@ -142,6 +142,30 @@ app.put("/possession/:libelle/close", (req, res) => {
   }
 });
 
+// Route pour supprimer une possession
+app.delete("/possession/:libelle", (req, res) => {
+  const { libelle } = req.params;
+  const data = readData();
+  const patrimoine = data.find((item) => item.model === "Patrimoine");
+
+  if (patrimoine) {
+    const possessions = patrimoine.data.possessions.filter(
+      (item) => item.libelle !== libelle
+    );
+
+    if (possessions.length < patrimoine.data.possessions.length) {
+      patrimoine.data.possessions = possessions;
+      writeData(data); // Sauvegarder les données mises à jour
+      res.status(200).json({ message: `Possession ${libelle} supprimée.` });
+    } else {
+      res.status(404).json({ message: `Possession avec libelle ${libelle} non trouvée.` });
+    }
+  } else {
+    res.status(404).json({ message: "Patrimoine non trouvé." });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
 });

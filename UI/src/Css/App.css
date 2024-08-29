@@ -1,0 +1,59 @@
+/* App.css */
+body {
+  background-color: #1e1e1e; /* Fond sombre */
+  color: #e0e0e0; /* Écriture claire */
+}
+
+.container {
+  background-color: #2a2a2a; /* Fond sombre pour le conteneur */
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.table {
+  color: #e0e0e0; /* Écriture claire dans le tableau */
+}
+
+.thead-dark th {
+  background-color: #004d40; /* Vert émeraude foncé */
+  color: #ffffff; /* Écriture blanche pour l'en-tête */
+}
+
+.table-bordered {
+  border-color: #004d40; /* Bordures claires du tableau */
+}
+
+.table-bordered td,
+.table-bordered th {
+  border-color: #004d40; /* Bordures claires du tableau */
+}
+
+.btn-primary {
+  background-color: #00796b; /* Vert émeraude pour les boutons primaires */
+  border-color: #004d40; /* Bordures des boutons */
+}
+
+.btn-primary:hover {
+  background-color: #004d40; /* Vert émeraude foncé au survol */
+  border-color: #00796b; /* Bordures des boutons au survol */
+}
+
+.btn-warning {
+  background-color: #ffb300; /* Couleur des boutons d'édition */
+  border-color: #ffb300;
+}
+
+.btn-danger {
+  background-color: #d32f2f; /* Couleur des boutons de suppression */
+  border-color: #d32f2f;
+}
+
+.btn-success {
+  background-color: #004d40; /* Vert émeraude pour les boutons d'application */
+  border-color: #004d40;
+}
+
+.btn-success:hover {
+  background-color: #00332c; /* Vert émeraude foncé au survol */
+  border-color: #00332c;
+}
