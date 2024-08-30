@@ -11,7 +11,7 @@ export default function WelcomePage() {
       .then((response) => response.json())
       .then((data) => {
         if (data.length > 0) {
-          setPossesseur(data[0].possesseur.nom); // Assume all possessions belong to the same possesseur
+          setPossesseur(data[0].possesseur.nom);
         }
       })
       .catch((error) =>

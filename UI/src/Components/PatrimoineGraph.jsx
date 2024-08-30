@@ -38,12 +38,11 @@ export default function PatrimoineGraph() {
         return result.json();
       })
       .then((response) => {
-        const possesseur = "John Doe"; // Remplacez par le possesseur réel si nécessaire
+        const possesseur = "John Doe";
         const patrimoineObj = new Patrimoine(possesseur, response);
         setPatrimoine(patrimoineObj);
         console.log(response);
 
-        // Générer les labels et valeurs pour chaque jour de l'année sélectionnée
         const labels = [];
         const values = [];
 
@@ -67,8 +66,8 @@ export default function PatrimoineGraph() {
             {
               label: `Valeur du Patrimoine à partir du ${day}-${year}`,
               data: values,
-              borderColor: "#32CD32", // Couleur de la courbe en vert émeraude
-              backgroundColor: "rgba(50, 205, 50, 0.2)", // Fond légèrement vert
+              borderColor: "#32CD32",
+              backgroundColor: "rgba(50, 205, 50, 0.2)",
               fill: true,
               tension: 0.1,
             },
