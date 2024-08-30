@@ -9,7 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<WelcomePage />} />
         <Route path="/possessions" element={<PossessionsPage />} />
-        <Route path="/graph" element={<PatrimoineGraph />} />
+        <Route path="/graphique" element={<PatrimoineGraph />} />
       </Routes>
     </Router>
   );

@@ -29,12 +29,12 @@ export default function AddPossessionModal({
     axios
       .post("http://localhost:4000/possession", {
         ...formState,
-        possesseurNom: "John Doe", // Inclure le nom du possesseur si nécessaire
-      }) // Envoi des données au serveur
+        possesseurNom: "John Doe", 
+      }) 
       .then((response) => {
         console.log("Possession ajoutée:", response.data);
-        onPossessionAdded(response.data); // Notifie le parent de la nouvelle possession
-        handleClose(); // Ferme le modal
+        onPossessionAdded(response.data); 
+        handleClose(); 
       })
       .catch((error) => {
         console.error("Erreur lors de l'ajout de la possession:", error);

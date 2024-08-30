@@ -10,7 +10,7 @@ import Flux from "../../../models/possessions/Flux";
 import Possession from "../../../models/possessions/Possession";
 import "../Css/App.css";
 
-export default function App() {
+export default function PossessionsPage() {
   const [tab, setTab] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [totalValeurActuelle, setTotalValeurActuelle] = useState(0);
@@ -217,6 +217,11 @@ export default function App() {
           >
             Nouvelle Possession
           </button>
+          <Link to="/graphique" className="btn btn-info ms-2">
+            {" "}
+            {/* Lien vers PatrimoineGraph */}
+            Voir le Graphique
+          </Link>
         </div>
       </header>
 
