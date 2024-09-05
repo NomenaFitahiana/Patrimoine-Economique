@@ -5,7 +5,7 @@ import Form from "react-bootstrap/Form";
 import axios from "axios";
 import Possession from "../../../models/possessions/Possession";
 import Flux from "../../../models/possessions/Flux";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function EditPossessionForm({
   show,
@@ -17,7 +17,7 @@ export default function EditPossessionForm({
 
   const [dateFin, setDateFin] = useState(possession.dateFin || "");
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLibelle(possession.libelle || "");
@@ -38,6 +38,8 @@ export default function EditPossessionForm({
       return;
     }
 
+    console.log(possession.libelle);
+    console.log (updatedData.libelle);
     try {
       await axios.put(
         `http://localhost:4000/possession/${possession.libelle}`,
@@ -45,7 +47,8 @@ export default function EditPossessionForm({
       );
 
       let valeurActuelle = possession.valeurActuelle;
-      if (possession.type === "Bien Materiel") {
+
+      if (possession.valeurConstante=== null) {
         const possessionObj = new Possession(
           possession.possesseur,
           possession.libelle,
@@ -57,7 +60,7 @@ export default function EditPossessionForm({
         valeurActuelle = possessionObj.getValeurApresAmortissement(
           new Date(dateFin)
         );
-      } else if (possession.type === "Flux") {
+      } else  {
         const fluxObj = new Flux(
           possession.possesseur,
           possession.libelle,
@@ -70,13 +73,14 @@ export default function EditPossessionForm({
         valeurActuelle = fluxObj.getValeur(new Date(dateFin));
       }
 
+     
       onPossessionUpdated({
         ...possession,
         ...updatedData,
         valeurActuelle,
       });
       handleClose();
-      // navigate(0);
+      navigate(0);
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la possession:", error);
     }

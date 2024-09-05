@@ -8,7 +8,6 @@ export default function AddPossessionModal({
   onPossessionAdded,
 }) {
   const [formState, setFormState] = useState({
-    type: "",
     libelle: "",
     valeur: "",
     dateDebut: "",
@@ -29,12 +28,12 @@ export default function AddPossessionModal({
     axios
       .post("http://localhost:4000/possession", {
         ...formState,
-        possesseurNom: "John Doe", 
-      }) 
+        possesseurNom: "John Doe",
+      })
       .then((response) => {
         console.log("Possession ajoutée:", response.data);
-        onPossessionAdded(response.data); 
-        handleClose(); 
+        onPossessionAdded(response.data);
+        handleClose();
       })
       .catch((error) => {
         console.error("Erreur lors de l'ajout de la possession:", error);
@@ -48,16 +47,6 @@ export default function AddPossessionModal({
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="type">
-            <Form.Label>Type</Form.Label>
-            <Form.Control
-              type="text"
-              name="type"
-              value={formState.type}
-              onChange={handleChange}
-              required
-            />
-          </Form.Group>
           <Form.Group controlId="libelle">
             <Form.Label>Libellé</Form.Label>
             <Form.Control
@@ -68,6 +57,7 @@ export default function AddPossessionModal({
               required
             />
           </Form.Group>
+
           <Form.Group controlId="valeur">
             <Form.Label>Valeur Initiale</Form.Label>
             <Form.Control
@@ -78,6 +68,7 @@ export default function AddPossessionModal({
               required
             />
           </Form.Group>
+
           <Form.Group controlId="dateDebut">
             <Form.Label>Date de Début</Form.Label>
             <Form.Control
@@ -88,6 +79,7 @@ export default function AddPossessionModal({
               required
             />
           </Form.Group>
+
           <Form.Group controlId="tauxAmortissement">
             <Form.Label>Taux d'Amortissement</Form.Label>
             <Form.Control
@@ -107,6 +99,7 @@ export default function AddPossessionModal({
               onChange={handleChange}
             />
           </Form.Group>
+
           <Button variant="primary" type="submit" className="mt-3">
             Ajouter
           </Button>

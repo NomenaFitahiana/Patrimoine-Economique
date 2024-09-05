@@ -10,8 +10,8 @@ import {
   Tooltip,
   Legend,
   PointElement,
+  Filler 
 } from "chart.js";
-import Patrimoine from "../../../models/Patrimoine";
 
 ChartJS.register(
   LineElement,
@@ -20,13 +20,19 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  PointElement
+  PointElement,
+  Filler 
 );
+
+import Patrimoine from "../../../models/Patrimoine";
+
+
 
 export default function PatrimoineGraph() {
   const [data, setData] = useState(null);
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [day, setDay] = useState(1);
+  const [annee1, setAnnee1] = useState(new Date().getFullYear());
+  const [annee2, setAnnee2] = useState(new Date().getFullYear());
+  const [jour, setJour] = useState(1);
   const [patrimoine, setPatrimoine] = useState(null);
 
   const handleFetchData = () => {
@@ -42,37 +48,7 @@ export default function PatrimoineGraph() {
         const patrimoineObj = new Patrimoine(possesseur, response);
         setPatrimoine(patrimoineObj);
         console.log(response);
-
-        const labels = [];
-        const values = [];
-
-        for (let month = 0; month < 12; month++) {
-          const date = new Date(year, month, day);
-          labels.push(
-            date.toLocaleDateString("fr-FR", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-            })
-          );
-          values.push(patrimoineObj.getValeur(date));
-        }
-
-        console.log(values);
-
-        setData({
-          labels: labels,
-          datasets: [
-            {
-              label: `Valeur du Patrimoine à partir du ${day}-${year}`,
-              data: values,
-              borderColor: "#32CD32",
-              backgroundColor: "rgba(50, 205, 50, 0.2)",
-              fill: true,
-              tension: 0.1,
-            },
-          ],
-        });
+        console.log(patrimoineObj);
       })
       .catch((error) => {
         console.error(
@@ -81,6 +57,48 @@ export default function PatrimoineGraph() {
         );
       });
   };
+
+  useEffect(() => {
+    if (!patrimoine) return;
+    const labels = [];
+    const values = [];
+  
+    console.log(patrimoine);
+    for (let year = annee1; year <= annee2; year++) {
+      for (let month = 0; month < 12; month++) {
+        const date = new Date(year, month, jour);
+        labels.push(
+          date.toLocaleDateString("fr-FR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+        );
+        values.push(patrimoine.getValeur(date));
+      }
+    }
+  
+    console.log(values);
+  
+    const newData = {
+      labels: labels,
+      datasets: [
+        {
+          label: `Valeur du Patrimoine entre ${annee1} et ${annee2}`,
+          data: values,
+          borderColor: "#32CD32",
+          backgroundColor: "rgba(50, 205, 50, 0.2)",
+          fill: true,
+          tension: 0.1,
+        },
+      ],
+    };
+  
+    console.log("Setting data:", newData);
+    setData(newData);
+  }, [patrimoine, annee1, annee2, jour]);
+  
+  
 
   const options = {
     responsive: true,
@@ -91,6 +109,10 @@ export default function PatrimoineGraph() {
           display: true,
           text: "Date",
         },
+        ticks: {
+          maxRotation: 45, 
+          minRotation: 45,
+        },
       },
       y: {
         beginAtZero: true,
@@ -99,16 +121,23 @@ export default function PatrimoineGraph() {
           text: "Valeur",
         },
         min: 0,
-        max: 100000,
         ticks: {
-          stepSize: 10000,
+          stepSize: 10000, 
         },
       },
     },
   };
+  
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-5" style={{
+      backgroundColor: "#2E2E2E",
+      border: "2px solid #32CD32",
+      borderRadius: "8px",
+      color: "white",
+      height: "600px", 
+      width: "100%",
+    }}>
       <header className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="text-success">Graphique de Valeur du Patrimoine</h2>
         <Link to="/possessions" className="btn btn-primary">
@@ -117,21 +146,30 @@ export default function PatrimoineGraph() {
       </header>
 
       <div className="mb-3">
-        <label>Année: </label>
+        <label>Année de début: </label>
         <input
           type="number"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
+          value={annee1}
+          onChange={(e) => setAnnee1(parseInt(e.target.value) || 0)} 
           className="form-control"
         />
       </div>
 
       <div className="mb-3">
-        <label>Jour: </label>
         <input
           type="number"
-          value={day}
-          onChange={(e) => setDay(e.target.value)}
+          value={annee2}
+          onChange={(e) => setAnnee2(parseInt(e.target.value) || 0)} 
+          className="form-control"
+        />
+      </div>
+
+      <div className="mb-3">
+        <label>Jour du mois: </label>
+        <input
+          type="number"
+          value={jour}
+          onChange={(e) => setJour(parseInt(e.target.value) || 1)} 
           min="1"
           max="31"
           className="form-control"

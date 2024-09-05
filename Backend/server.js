@@ -38,10 +38,9 @@ app.get("/possession", (req, res) => {
   });
 });
 
-// Route pour créer une nouvelle possession
 app.post("/possession", (req, res) => {
   const {
-    possesseurNom, // Assurez-vous que ce champ est correctement transmis
+    possesseurNom, 
     type,
     libelle,
     valeur,
@@ -58,7 +57,7 @@ app.post("/possession", (req, res) => {
   }
 
   const newPossession = {
-    possesseur: { nom: possesseurNom }, // Assurez-vous que ce champ correspond au modèle de données
+    possesseur: { nom: possesseurNom }, 
     type: type || "Bien Materiel",
     libelle,
     valeur,
@@ -77,7 +76,7 @@ app.post("/possession", (req, res) => {
 
   if (patrimoine) {
     patrimoine.data.possessions.push(newPossession);
-    writeData(data); // Sauvegarder les nouvelles données
+    writeData(data); 
     res.status(201).json(newPossession);
   } else {
     res
@@ -103,7 +102,6 @@ app.put("/possession/:libelle", (req, res) => {
     );
 
     if (possession) {
-      // Mettre à jour les champs spécifiés
       Object.assign(possession, updateFields);
       writeData(data);
       res.status(200).json(possession);
@@ -128,7 +126,6 @@ app.put("/possession/:libelle/close", (req, res) => {
     );
 
     if (possession) {
-      // Mettre à jour `dateFin` à la date actuelle
       possession.dateFin = new Date().toISOString().split("T")[0];
       writeData(data); // Sauvegarder les données mises à jour
       res.status(200).json(possession);
@@ -142,7 +139,6 @@ app.put("/possession/:libelle/close", (req, res) => {
   }
 });
 
-// Route pour supprimer une possession
 app.delete("/possession/:libelle", (req, res) => {
   const { libelle } = req.params;
   const data = readData();
@@ -155,7 +151,7 @@ app.delete("/possession/:libelle", (req, res) => {
 
     if (possessions.length < patrimoine.data.possessions.length) {
       patrimoine.data.possessions = possessions;
-      writeData(data); // Sauvegarder les données mises à jour
+      writeData(data); 
       res.status(200).json({ message: `Possession ${libelle} supprimée.` });
     } else {
       res.status(404).json({ message: `Possession avec libelle ${libelle} non trouvée.` });

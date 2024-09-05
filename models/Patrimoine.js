@@ -1,11 +1,22 @@
+import Possession from "./possessions/Possession";
+
 export default class Patrimoine {
   constructor(possesseur, possessions) {
     this.possesseur = possesseur;
-    this.possessions = [...possessions]; // [Possession, Possession, ...]
+    this.possessions = possessions.map((possession) => {
+      return new Possession(
+        possession.possesseur,
+        possession.libelle,
+        possession.valeur,
+        new Date(possession.dateDebut),
+        new Date(possession.dateFin),
+        possession.tauxAmortissement
+      );
+    });// [Possession, Possession, ...]
   }
   getValeur(date) {
     let result = 0;
-    for (const item of this.possessions) {
+    for (let item of this.possessions) {
       result += item.getValeur(date);
     }
     return result;

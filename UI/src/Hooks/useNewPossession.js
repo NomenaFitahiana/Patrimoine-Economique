@@ -32,7 +32,7 @@ export default function useNewPossesion() {
     const updatedTab = tab.map((item) => {
       let valeurApresAmortissement;
 
-      if (item.type === "Bien Materiel") {
+        if(item.valeurConstante == null){
         valeurApresAmortissement = new Possession(
           item.possesseur,
           item.libelle,
@@ -125,8 +125,8 @@ export default function useNewPossesion() {
           if (item.libelle === updatedPossession.libelle) {
             let valeurApresAmortissement;
 
-            if (item.type === "Bien Materiel") {
-              valeurApresAmortissement = new Possession(
+              if(item.valeurConstante == null){
+                valeurApresAmortissement = new Possession(
                 item.possesseur,
                 item.libelle,
                 item.valeur,
