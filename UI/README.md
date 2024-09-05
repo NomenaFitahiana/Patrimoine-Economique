@@ -1,8 +1,13 @@
-# React + Vite
+# PATRIMOINE - ECONOMIQUE
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## TO DO :
 
-Currently, two official plugins are available:
+    - Réorganiser les components en Smart et dumb components
+    - Vérifier le CRUD:
+       - Vérifier le calcul lors de l'insertion d'une nouvelle possession
+    - Mettre le UI dans un nouveau repos git
+    - Déployement
+    - Vidéo montrant la fonctionnalité du CRUD
+    - useModal
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Deadline : Samedi 07 Septembre avant 08h

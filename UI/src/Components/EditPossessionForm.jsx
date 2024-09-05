@@ -5,8 +5,9 @@ import Form from "react-bootstrap/Form";
 import axios from "axios";
 import Possession from "../../../models/possessions/Possession";
 import Flux from "../../../models/possessions/Flux";
+// import { useNavigate } from "react-router-dom";
 
-function EditPossessionForm({
+export default function EditPossessionForm({
   show,
   handleClose,
   possession,
@@ -15,6 +16,8 @@ function EditPossessionForm({
   const [libelle, setLibelle] = useState(possession.libelle || "");
 
   const [dateFin, setDateFin] = useState(possession.dateFin || "");
+
+  // const navigate = useNavigate();
 
   useEffect(() => {
     setLibelle(possession.libelle || "");
@@ -42,26 +45,26 @@ function EditPossessionForm({
       );
 
       let valeurActuelle = possession.valeurActuelle;
-      if (type === "Bien Materiel") {
+      if (possession.type === "Bien Materiel") {
         const possessionObj = new Possession(
           possession.possesseur,
-          libelle,
-          valeur,
-          new Date(dateDebut),
-          new Date(dateFin),
-          tauxAmortissement
+          possession.libelle,
+          possession.valeur,
+          new Date(possession.dateDebut),
+          new Date(possession.dateFin),
+          possession.tauxAmortissement
         );
         valeurActuelle = possessionObj.getValeurApresAmortissement(
           new Date(dateFin)
         );
-      } else if (type === "Flux") {
+      } else if (possession.type === "Flux") {
         const fluxObj = new Flux(
           possession.possesseur,
-          libelle,
-          valeur,
-          new Date(dateDebut),
-          new Date(dateFin),
-          tauxAmortissement,
+          possession.libelle,
+          possession.valeur,
+          new Date(possession.dateDebut),
+          new Date(possession.dateFin),
+          possession.tauxAmortissement,
           possession.jour
         );
         valeurActuelle = fluxObj.getValeur(new Date(dateFin));
@@ -73,6 +76,7 @@ function EditPossessionForm({
         valeurActuelle,
       });
       handleClose();
+      // navigate(0);
     } catch (error) {
       console.error("Erreur lors de la mise à jour de la possession:", error);
     }
@@ -113,4 +117,3 @@ function EditPossessionForm({
   );
 }
 
-export default EditPossessionForm;
