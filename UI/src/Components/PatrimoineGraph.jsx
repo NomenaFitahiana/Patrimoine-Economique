@@ -10,8 +10,9 @@ import {
   Tooltip,
   Legend,
   PointElement,
-  Filler 
+  Filler,
 } from "chart.js";
+
 import Flux from "../../../models/possessions/Flux";
 import Possession from "../../../models/possessions/Possession";
 import Argent from "../../../models/possessions/Argent";
@@ -24,7 +25,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   PointElement,
-  Filler 
+  Filler
 );
 
 export default function PatrimoineGraph() {
@@ -43,7 +44,9 @@ export default function PatrimoineGraph() {
         return result.json();
       })
       .then((response) => {
-        setPossessions(response)
+        setPossessions(response);
+        console.log("possessions récupérées :", response);
+        calculateAndGenerateGraph(response); 
       })
       .catch((error) => {
         console.error(
@@ -53,15 +56,13 @@ export default function PatrimoineGraph() {
       });
   };
 
-  useEffect(() => {
-    handleFetchData(); // Appel pour récupérer les données lors du montage
-  }, []);
+  function calculateValue(possessions, selectedDate) {
+    let totalValue = 0;
 
-  function calculateValue(possessions,selectedDate) {
-    console.log(possessions);
-   let value =  possessions.map((item) => {
+    possessions.forEach((item) => {
+      let valeurApresAmortissement = 0;
+
       if (item.valeurConstante) {
-        // Utiliser Flux si tauxAmortissement est null
         const flux = new Flux(
           item.possesseur,
           item.libelle,
@@ -71,8 +72,8 @@ export default function PatrimoineGraph() {
           item.tauxAmortissement,
           item.jour
         );
+        valeurApresAmortissement = flux.getValeur(selectedDate);
       } else if (item.libelle === "Compte épargne") {
-        // Utiliser Argent si libelle est "Compte épargne"
         const argent = new Argent(
           item.possesseur,
           item.libelle,
@@ -80,10 +81,10 @@ export default function PatrimoineGraph() {
           new Date(item.dateDebut),
           selectedDate,
           item.tauxAmortissement,
-          "Epargne" // Type pour Argent
+          "Epargne"
         );
+        valeurApresAmortissement = argent.getValeurApresAmortissement(selectedDate);
       } else {
-        // Utiliser Possession pour les autres cas
         const possession = new Possession(
           item.possesseur,
           item.libelle,
@@ -92,49 +93,50 @@ export default function PatrimoineGraph() {
           selectedDate,
           item.tauxAmortissement
         );
+        valeurApresAmortissement = possession.getValeurApresAmortissement(selectedDate);
       }
-    }
-    ).reduce((sum, p)=>sum+=p.getValeur(selectedDate))
-    console.log(value);
+
+      totalValue += valeurApresAmortissement;
+    });
+
+    return totalValue;
   }
-  useEffect(() => {
-    console.log('possessions'+possessions);
-    const labels = [];
-    const values = [];
-  for (let year = annee1; year <= annee2; year++) {
-    for (let month = 0; month < 12; month++) {
-      // Crée une date avec l'année, le mois et le jour spécifiés
-      const date = new Date(year, month, jour);
-  
-      // Formate la date en yyyy-mm-dd
-      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
-  
-      labels.push(formattedDate);
-      console.log(formattedDate); // Affiche la date formatée
-      values.push(calculateValue(possessions, date)); // Utilise la date pour calculer la valeur
+
+  const calculateAndGenerateGraph = (possessions) => {
+    if (possessions.length > 0) {
+      const labels = [];
+      const values = [];
+
+      for (let year = annee1; year <= annee2; year++) {
+        for (let month = 0; month < 12; month++) {
+          const date = new Date(year, month, jour);
+          const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
+
+          labels.push(formattedDate);
+          const value = calculateValue(possessions, date); 
+          values.push(value);
+        }
+      }
+
+      const newData = {
+        labels: labels,
+        datasets: [
+          {
+            label: `Valeur du Patrimoine entre ${annee1} et ${annee2}`,
+            data: values,
+            borderColor: "#32CD32",
+            backgroundColor: "rgba(50, 205, 50, 0.2)",
+            fill: true,
+            tension: 0.1,
+          },
+        ],
+      };
+
+      setData(newData);
     }
-  }
-    const newData = {
-      labels: labels,
-      datasets: [
-        {
-          label: `Valeur du Patrimoine entre ${annee1} et ${annee2}`,
-          data: values,
-          borderColor: "#32CD32",
-          backgroundColor: "rgba(50, 205, 50, 0.2)",
-          fill: true,
-          tension: 0.1,
-        },
-      ],
-    };
-  
-    console.log("Setting data:", newData);
-    setData(newData);
-  }, [possessions, annee1, annee2, jour]);
-  
-  
+  };
 
   const options = {
     responsive: true,
@@ -146,7 +148,7 @@ export default function PatrimoineGraph() {
           text: "Date",
         },
         ticks: {
-          maxRotation: 45, 
+          maxRotation: 45,
           minRotation: 45,
         },
       },
@@ -158,22 +160,24 @@ export default function PatrimoineGraph() {
         },
         min: 0,
         ticks: {
-          stepSize: 10000, 
+          stepSize: 10000,
         },
       },
     },
   };
-  
 
   return (
-    <div className="container mt-5" style={{
-      backgroundColor: "#2E2E2E",
-      border: "2px solid #32CD32",
-      borderRadius: "8px",
-      color: "white",
-      height: "600px", 
-      width: "100%",
-    }}>
+    <div
+      className="container mt-5"
+      style={{
+        backgroundColor: "#2E2E2E",
+        border: "2px solid #32CD32",
+        borderRadius: "8px",
+        color: "white",
+        height: "600px",
+        width: "100%",
+      }}
+    >
       <header className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="text-success">Graphique de Valeur du Patrimoine</h2>
         <Link to="/possessions" className="btn btn-primary">
@@ -186,7 +190,7 @@ export default function PatrimoineGraph() {
         <input
           type="number"
           value={annee1}
-          onChange={(e) => setAnnee1(parseInt(e.target.value) || 0)} 
+          onChange={(e) => setAnnee1(parseInt(e.target.value) || 0)}
           className="form-control"
         />
       </div>
@@ -195,7 +199,7 @@ export default function PatrimoineGraph() {
         <input
           type="number"
           value={annee2}
-          onChange={(e) => setAnnee2(parseInt(e.target.value) || 0)} 
+          onChange={(e) => setAnnee2(parseInt(e.target.value) || 0)}
           className="form-control"
         />
       </div>
@@ -205,7 +209,7 @@ export default function PatrimoineGraph() {
         <input
           type="number"
           value={jour}
-          onChange={(e) => setJour(parseInt(e.target.value) || 1)} 
+          onChange={(e) => setJour(parseInt(e.target.value) || 1)}
           min="1"
           max="31"
           className="form-control"
