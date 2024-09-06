@@ -26,7 +26,7 @@ export default function AddPossessionModal({
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:4000/possession", {
+      .post(`http://localhost:4000/possession`, {
         ...formState,
         possesseurNom: "John Doe",
       })

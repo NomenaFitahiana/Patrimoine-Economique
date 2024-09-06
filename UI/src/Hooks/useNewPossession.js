@@ -12,7 +12,7 @@ export default function useNewPossesion() {
   const [currentPossession, setCurrentPossession] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:4000/possession")
+    fetch(`http://localhost:4000/possession`)
       .then((result) => {
         if (!result.ok) {
           throw new Error("Erreur de réseau " + result.status);
@@ -127,11 +127,11 @@ export default function useNewPossesion() {
     );
   };
 
-  const handleClosePossession = (libelle) => {
+  const handleClosePossession = (id) => {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0];
 
-    fetch(`http://localhost:4000/possession/${libelle}`, {
+    fetch(`http://localhost:4000/possession/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -140,13 +140,14 @@ export default function useNewPossesion() {
     })
       .then((response) => {
         if (!response.ok) {
+          console.log(response);
           throw new Error("Erreur de mise à jour " + response.status);
         }
         return response.json();
       })
       .then((updatedPossession) => {
         const updatedTab = tab.map((item) => {
-          if (item.libelle === updatedPossession.libelle) {
+          if (item.id === updatedPossession.id) {
             let valeurApresAmortissement;
 
               if(item.valeurConstante == null){
@@ -195,6 +196,9 @@ export default function useNewPossesion() {
       .catch((error) => {
         console.error("Erreur lors de la fermeture de la possession:", error);
       });
+
+      console.log("ID de la possession à fermer:", id);
+
   };
 
  

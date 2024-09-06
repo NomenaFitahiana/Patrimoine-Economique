@@ -35,7 +35,7 @@ export default function PatrimoineGraph() {
   const [possessions, setPossessions] = useState([]);
 
   const handleFetchData = () => {
-    fetch("http://localhost:4000/possession")
+    fetch(`http://localhost:4000/possession`)
       .then((result) => {
         if (!result.ok) {
           throw new Error("Erreur de réseau " + result.status);

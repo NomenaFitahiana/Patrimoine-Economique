@@ -90,7 +90,9 @@ export default function PossessionsPage() {
                   </td>
                   <td className="text-center">
                     {item.valeurActuelle
-                      ? item.valeurActuelle.toFixed(2)
+                      ? item.valeurActuelle.toFixed(2) < 0 ?
+                      item.valeurActuelle.toFixed(2) * -1:
+                      item.valeurActuelle.toFixed(2)
                       : "N/A"}
                   </td>
                   <td className="text-center">
@@ -102,7 +104,7 @@ export default function PossessionsPage() {
                     </button>
                     <button
                       className="btn btn-danger mx-2"
-                      onClick={() => handleClosePossession(item.libelle)}
+                      onClick={() => handleClosePossession(item.id)}
                     >
                       Fermer
                     </button>

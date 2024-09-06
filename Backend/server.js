@@ -87,7 +87,6 @@ app.get("/possession", (req, res) => {
 app.post("/possession", (req, res) => {
   const {
     possesseurNom,
-    id,
     libelle,
     valeur,
     dateDebut,
@@ -102,9 +101,28 @@ app.post("/possession", (req, res) => {
     });
   }
 
-  // Générer un ID unique pour chaque nouvelle possession
+  const data = readData();
+  const patrimoine = data.find(
+    (item) =>
+      item.model === "Patrimoine" && item.data.possesseur.nom === possesseurNom
+  );
+
+  if (!patrimoine) {
+    return res
+      .status(404)
+      .json({ message: `Patrimoine pour ${possesseurNom} non trouvé.` });
+  }
+
+  // Trouver l'ID maximum existant et l'incrémenter de 1
+  const maxId = patrimoine.data.possessions.reduce(
+    (max, possession) => (possession.id > max ? possession.id : max),
+    0
+  );
+  const newId = maxId + 1;
+
+  // Créer la nouvelle possession avec l'ID incrémenté
   const newPossession = {
-    id, // Utilisation de l'heure actuelle comme identifiant unique
+    id: newId,
     possesseur: { nom: possesseurNom },
     libelle,
     valeur,
@@ -115,22 +133,11 @@ app.post("/possession", (req, res) => {
     dateFin: null,
   };
 
-  const data = readData();
-  const patrimoine = data.find(
-    (item) =>
-      item.model === "Patrimoine" && item.data.possesseur.nom === possesseurNom
-  );
-
-  if (patrimoine) {
-    patrimoine.data.possessions.push(newPossession);
-    writeData(data);
-    res.status(201).json(newPossession);
-  } else {
-    res
-      .status(404)
-      .json({ message: `Patrimoine pour ${possesseurNom} non trouvé.` });
-  }
+  patrimoine.data.possessions.push(newPossession);
+  writeData(data);
+  res.status(201).json(newPossession);
 });
+
 
 app.put("/possession/:id", (req, res) => {
   const { id } = req.params;
@@ -172,7 +179,7 @@ app.put("/possession/:id/close", (req, res) => {
 
   if (patrimoine) {
     const possession = patrimoine.data.possessions.find(
-      (item) => item.id === id
+      (item) => item.id === parseInt(id)
     );
 
     if (possession) {
