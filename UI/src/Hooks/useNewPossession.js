@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Flux from "../../../models/possessions/Flux";
 import Possession from "../../../models/possessions/Possession";
+import Argent from "../../../models/possessions/Argent";
 
 export default function useNewPossesion() {
   const [tab, setTab] = useState([]);
@@ -28,20 +29,12 @@ export default function useNewPossesion() {
 
   const handleApplyClick = () => {
     if (!selectedDate) return;
-
+  
     const updatedTab = tab.map((item) => {
       let valeurApresAmortissement;
-
-        if(item.valeurConstante == null){
-        valeurApresAmortissement = new Possession(
-          item.possesseur,
-          item.libelle,
-          item.valeur,
-          new Date(item.dateDebut),
-          selectedDate,
-          item.tauxAmortissement
-        ).getValeurApresAmortissement(selectedDate);
-      } else {
+  
+      if (item.valeurConstante) {
+        // Utiliser Flux si tauxAmortissement est null
         const flux = new Flux(
           item.possesseur,
           item.libelle,
@@ -52,26 +45,57 @@ export default function useNewPossesion() {
           item.jour
         );
         valeurApresAmortissement = flux.getValeur(selectedDate);
-      }
+        console.log( "FLUX" + valeurApresAmortissement);
+      
 
+      } else if (item.libelle === "Compte épargne") {
+        // Utiliser Argent si libelle est "Compte épargne"
+        const argent = new Argent(
+          item.possesseur,
+          item.libelle,
+          item.valeur,
+          new Date(item.dateDebut),
+          selectedDate,
+          item.tauxAmortissement,
+          "Epargne" // Type pour Argent
+        );
+        valeurApresAmortissement = argent.getValeurApresAmortissement(selectedDate);
+        console.log( "argent: " + valeurApresAmortissement);
+
+      } else {
+        // Utiliser Possession pour les autres cas
+        const possession = new Possession(
+          item.possesseur,
+          item.libelle,
+          item.valeur,
+          new Date(item.dateDebut),
+          selectedDate,
+          item.tauxAmortissement
+        );
+        valeurApresAmortissement = possession.getValeurApresAmortissement(selectedDate);
+        console.log("possession" + valeurApresAmortissement);
+
+      }
+  
       return {
         ...item,
         dateFin: selectedDate.toISOString().split("T")[0],
-        valeurActuelle:
-          valeurApresAmortissement < 0
-            ? valeurApresAmortissement * -1
-            : valeurApresAmortissement,
+        valeurActuelle: valeurApresAmortissement,
       };
     });
-
+  
     setTab(updatedTab);
 
+    console.log(updatedTab);
+  
     const total = updatedTab.reduce(
-      (sum, item) => sum + item.valeurActuelle,
+      (sum, item) => sum +( item.valeurActuelle),
       0
-    );
+    ).toFixed(2);
+    console.log(total);
     setTotalValeurActuelle(total);
   };
+  
 
   const handleNewPossessionClick = () => {
     setShowModal(true);
@@ -173,27 +197,7 @@ export default function useNewPossesion() {
       });
   };
 
-  const handleDeletePossession = (libelle) => {
-    fetch(`http://localhost:4000/possession/${libelle}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Erreur de suppression " + response.status);
-        }
-        const updatedTab = tab.filter((item) => item.libelle !== libelle);
-        setTab(updatedTab);
-
-        const total = updatedTab.reduce(
-          (sum, item) => sum + item.valeurActuelle,
-          0
-        );
-        setTotalValeurActuelle(total);
-      })
-      .catch((error) => {
-        console.error("Erreur lors de la suppression de la possession:", error);
-      });
-  };
+ 
 
   return [
     tab,
@@ -208,7 +212,6 @@ export default function useNewPossesion() {
     setShowEditModal,
     currentPossession,
     setCurrentPossession,
-    handleDeletePossession,
     handleClosePossession,
     handlePossessionUpdated,
     handleCloseEditModal,

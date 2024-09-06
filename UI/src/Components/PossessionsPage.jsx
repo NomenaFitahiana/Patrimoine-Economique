@@ -21,7 +21,6 @@ export default function PossessionsPage() {
     setShowEditModal,
     currentPossession,
     setCurrentPossession,
-    handleDeletePossession,
     handleClosePossession,
     handlePossessionUpdated,
     handleCloseEditModal,
@@ -107,12 +106,6 @@ export default function PossessionsPage() {
                     >
                       Fermer
                     </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDeletePossession(item.libelle)}
-                    >
-                      Supprimer
-                    </button>
                   </td>
                 </tr>
               ))
@@ -130,7 +123,7 @@ export default function PossessionsPage() {
       <div className="d-flex justify-content-between align-items-center mt-4">
         <div>
           <strong>Total Valeur Actuelle: </strong>
-          {totalValeurActuelle.toFixed(2)}
+          {totalValeurActuelle}
         </div>
         <div>
           <strong>Date d'application des valeurs: </strong>

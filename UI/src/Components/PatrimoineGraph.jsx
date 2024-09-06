@@ -74,11 +74,13 @@ export default function PatrimoineGraph() {
             year: "numeric",
           })
         );
+        console.log(date);
         values.push(patrimoine.getValeur(date));
       }
     }
   
-    console.log(values);
+    console.log("value" + values);
+    console.log("label" + labels);
   
     const newData = {
       labels: labels,
