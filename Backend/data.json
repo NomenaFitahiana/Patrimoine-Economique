@@ -76,12 +76,12 @@
             "nom": "John Doe"
           },
           "id": 6,
-          "libelle": "Redmi Note ",
+          "libelle": "Redmi Note 9",
           "valeur": 800000,
           "dateDebut": "2022-12-29T00:00:00.000Z",
           "dateFin": "2024-09-06",
           "tauxAmortissement": 15
-        }
+        }       
       ]
     }
   }

@@ -7,7 +7,7 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
-const path = "../data/data.json";
+const path = "./data.json";
 
 app.use(cors());
 app.use(express.json());
