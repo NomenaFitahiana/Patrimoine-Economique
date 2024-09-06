@@ -40,9 +40,11 @@ export default function EditPossessionForm({
 
     console.log(possession.libelle);
     console.log (updatedData.libelle);
+    console.log(possession.id);
+
     try {
       await axios.put(
-        `http://localhost:4000/possession/${possession.libelle}`,
+        `http://localhost:4000/possession/${possession.id}`,
         updatedData
       );
 
