@@ -1,9 +1,12 @@
 import express from "express";
 import fs from "node:fs";
 import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
-const port = 4000;
+const port = process.env.PORT || 4000;
 const path = "../data/data.json";
 
 app.use(cors());

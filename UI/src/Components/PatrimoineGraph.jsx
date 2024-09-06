@@ -12,6 +12,9 @@ import {
   PointElement,
   Filler 
 } from "chart.js";
+import Flux from "../../../models/possessions/Flux";
+import Possession from "../../../models/possessions/Possession";
+import Argent from "../../../models/possessions/Argent";
 
 ChartJS.register(
   LineElement,
@@ -24,16 +27,12 @@ ChartJS.register(
   Filler 
 );
 
-import Patrimoine from "../../../models/Patrimoine";
-
-
-
 export default function PatrimoineGraph() {
   const [data, setData] = useState(null);
   const [annee1, setAnnee1] = useState(new Date().getFullYear());
   const [annee2, setAnnee2] = useState(new Date().getFullYear());
   const [jour, setJour] = useState(1);
-  const [patrimoine, setPatrimoine] = useState(null);
+  const [possessions, setPossessions] = useState([]);
 
   const handleFetchData = () => {
     fetch("http://localhost:4000/possession")
@@ -44,11 +43,7 @@ export default function PatrimoineGraph() {
         return result.json();
       })
       .then((response) => {
-        const possesseur = "John Doe";
-        const patrimoineObj = new Patrimoine(possesseur, response);
-        setPatrimoine(patrimoineObj);
-        console.log(response);
-        console.log(patrimoineObj);
+        setPossessions(response)
       })
       .catch((error) => {
         console.error(
@@ -59,29 +54,68 @@ export default function PatrimoineGraph() {
   };
 
   useEffect(() => {
-    if (!patrimoine) return;
-    const labels = [];
-    const values = [];
-  
-    console.log(patrimoine);
-    for (let year = annee1; year <= annee2; year++) {
-      for (let month = 0; month < 12; month++) {
-        const date = new Date(year, month, jour);
-        labels.push(
-          date.toLocaleDateString("fr-FR", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          })
+    handleFetchData(); // Appel pour récupérer les données lors du montage
+  }, []);
+
+  function calculateValue(possessions,selectedDate) {
+    console.log(possessions);
+   let value =  possessions.map((item) => {
+      if (item.valeurConstante) {
+        // Utiliser Flux si tauxAmortissement est null
+        const flux = new Flux(
+          item.possesseur,
+          item.libelle,
+          item.valeurConstante,
+          new Date(item.dateDebut),
+          selectedDate,
+          item.tauxAmortissement,
+          item.jour
         );
-        console.log(date);
-        values.push(patrimoine.getValeur(date));
+      } else if (item.libelle === "Compte épargne") {
+        // Utiliser Argent si libelle est "Compte épargne"
+        const argent = new Argent(
+          item.possesseur,
+          item.libelle,
+          item.valeur,
+          new Date(item.dateDebut),
+          selectedDate,
+          item.tauxAmortissement,
+          "Epargne" // Type pour Argent
+        );
+      } else {
+        // Utiliser Possession pour les autres cas
+        const possession = new Possession(
+          item.possesseur,
+          item.libelle,
+          item.valeur,
+          new Date(item.dateDebut),
+          selectedDate,
+          item.tauxAmortissement
+        );
       }
     }
+    ).reduce((sum, p)=>sum+=p.getValeur(selectedDate))
+    console.log(value);
+  }
+  useEffect(() => {
+    console.log('possessions'+possessions);
+    const labels = [];
+    const values = [];
+  for (let year = annee1; year <= annee2; year++) {
+    for (let month = 0; month < 12; month++) {
+      // Crée une date avec l'année, le mois et le jour spécifiés
+      const date = new Date(year, month, jour);
   
-    console.log("value" + values);
-    console.log("label" + labels);
+      // Formate la date en yyyy-mm-dd
+      const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}-${date.getDate().toString().padStart(2, "0")}`;
   
+      labels.push(formattedDate);
+      console.log(formattedDate); // Affiche la date formatée
+      values.push(calculateValue(possessions, date)); // Utilise la date pour calculer la valeur
+    }
+  }
     const newData = {
       labels: labels,
       datasets: [
@@ -98,7 +132,7 @@ export default function PatrimoineGraph() {
   
     console.log("Setting data:", newData);
     setData(newData);
-  }, [patrimoine, annee1, annee2, jour]);
+  }, [possessions, annee1, annee2, jour]);
   
   
 
