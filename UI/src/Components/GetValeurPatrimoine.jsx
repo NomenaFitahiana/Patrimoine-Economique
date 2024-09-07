@@ -1,3 +1,7 @@
+import Flux from  "../../models/possessions/Flux";
+import Argent from  "../../models/possessions/Argent";
+import Possession from  "../../models/possessions/Possession";
+
 export default GetValeurPatrimoine(){
     const updatedTab = tab.map((item) => {
         let valeurApresAmortissement;

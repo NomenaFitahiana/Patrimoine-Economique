@@ -7,7 +7,7 @@ export default function WelcomePage() {
   const [possesseur, setPossesseur] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:4000/possession`)
+    fetch(`${import.meta.env.VITE_URL_API }/possession`)
       .then((response) => response.json())
       .then((data) => {
         if (data.length > 0) {

@@ -11,6 +11,9 @@ const path = "./data.json";
 
 app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:5173'  // Frontend local
+}));  
 
 const readData = () => {
   const data = fs.readFileSync(path, "utf8");

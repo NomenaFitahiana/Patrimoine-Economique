@@ -3,8 +3,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
-import Possession from "../../../models/possessions/Possession";
-import Flux from "../../../models/possessions/Flux";
+import Possession from "../../models/possessions/Possession";
+import Flux from  "../../models/possessions/Flux";
 import { useNavigate } from "react-router-dom";
 
 export default function EditPossessionForm({
@@ -44,7 +44,7 @@ export default function EditPossessionForm({
 
     try {
       await axios.put(
-        `http://localhost:4000/possession/${possession.id}`,
+        `${import.meta.env.VITE_URL_API }/possession/${possession.id}`,
         updatedData
       );
 

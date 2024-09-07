@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Flux from "../../../models/possessions/Flux";
-import Possession from "../../../models/possessions/Possession";
-import Argent from "../../../models/possessions/Argent";
+import Flux from  "../../models/possessions/Flux";
+import Possession from  "../../models/possessions/Possession";
+import Argent from  "../../models/possessions/Argent";
 
 export default function useNewPossesion() {
   const [tab, setTab] = useState([]);
@@ -12,7 +12,7 @@ export default function useNewPossesion() {
   const [currentPossession, setCurrentPossession] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:4000/possession`)
+    fetch(`${import.meta.env.VITE_URL_API }/possession`)
       .then((result) => {
         if (!result.ok) {
           throw new Error("Erreur de réseau " + result.status);
@@ -131,7 +131,7 @@ export default function useNewPossesion() {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0];
 
-    fetch(`http://localhost:4000/possession/${id}`, {
+    fetch(`${import.meta.env.VITE_URL_API }/possession/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

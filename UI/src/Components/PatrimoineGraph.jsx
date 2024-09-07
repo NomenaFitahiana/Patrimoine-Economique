@@ -13,9 +13,9 @@ import {
   Filler,
 } from "chart.js";
 
-import Flux from "../../../models/possessions/Flux";
-import Possession from "../../../models/possessions/Possession";
-import Argent from "../../../models/possessions/Argent";
+import Flux from  "../../models/possessions/Flux";
+import Possession from  "../../models/possessions/Possession";
+import Argent from  "../../models/possessions/Argent";
 
 ChartJS.register(
   LineElement,
@@ -36,7 +36,7 @@ export default function PatrimoineGraph() {
   const [possessions, setPossessions] = useState([]);
 
   const handleFetchData = () => {
-    fetch(`http://localhost:4000/possession`)
+    fetch(`${import.meta.env.VITE_URL_API }/possession`)
       .then((result) => {
         if (!result.ok) {
           throw new Error("Erreur de réseau " + result.status);
