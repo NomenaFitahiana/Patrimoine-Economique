@@ -12,8 +12,12 @@ const path = "./data.json";
 app.use(cors());
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:5173/'  // Frontend local
-}));  
+  origin: 'http://localhost:5173',
+  methods:  
+ ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200  
+}));
 
 const readData = () => {
   const data = fs.readFileSync(path, "utf8");
@@ -41,51 +45,6 @@ app.get("/possession", (req, res) => {
     }
   });
 });
-
-// app.post("/possession", (req, res) => {
-//   const {
-//     possesseurNom, 
-//     libelle,
-//     valeur,
-//     dateDebut,
-//     tauxAmortissement,
-//     jour,
-//     valeurConstante,
-//   } = req.body;
-
-//   if (!libelle || !valeur || !dateDebut) {
-//     return res.status(400).json({
-//       message: "Libellé, valeur, et date de début sont obligatoires.",
-//     });
-//   }
-
-//   const newPossession = {
-//     possesseur: { nom: possesseurNom }, 
-//     libelle,
-//     valeur,
-//     dateDebut,
-//     tauxAmortissement: tauxAmortissement || null,
-//     jour: jour || null,
-//     valeurConstante: valeurConstante || null,
-//     dateFin: null,
-//   };
-
-//   const data = readData();
-//   const patrimoine = data.find(
-//     (item) =>
-//       item.model === "Patrimoine" && item.data.possesseur.nom === possesseurNom
-//   );
-
-//   if (patrimoine) {
-//     patrimoine.data.possessions.push(newPossession);
-//     writeData(data); 
-//     res.status(201).json(newPossession);
-//   } else {
-//     res
-//       .status(404)
-//       .json({ message: `Patrimoine pour ${possesseurNom} non trouvé.` });
-//   }
-// });
 
 app.post("/possession", (req, res) => {
   const {
