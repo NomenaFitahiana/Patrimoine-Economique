@@ -3,11 +3,18 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const apiURL = import.meta.env.VITE_URL_API 
+
 export default function WelcomePage() {
   const [possesseur, setPossesseur] = useState("");
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_URL_API }/possession`)
+    fetch(`${apiURL }/possession`,  {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         if (data.length > 0) {

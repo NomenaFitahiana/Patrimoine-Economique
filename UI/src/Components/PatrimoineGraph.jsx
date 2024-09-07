@@ -28,6 +28,8 @@ ChartJS.register(
   Filler
 );
 
+const apiURL = import.meta.env.VITE_URL_API 
+
 export default function PatrimoineGraph() {
   const [data, setData] = useState(null);
   const [annee1, setAnnee1] = useState(new Date().getFullYear());
@@ -36,7 +38,12 @@ export default function PatrimoineGraph() {
   const [possessions, setPossessions] = useState([]);
 
   const handleFetchData = () => {
-    fetch(`${import.meta.env.VITE_URL_API }/possession`)
+    fetch(`${apiURL}/possession`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((result) => {
         if (!result.ok) {
           throw new Error("Erreur de réseau " + result.status);

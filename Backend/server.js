@@ -9,14 +9,13 @@ const app = express();
 const port = process.env.PORT || 4000;
 const path = "./data.json";
 
-app.use(cors());
 app.use(express.json());
+
 app.use(cors({
-  origin: '/',
-  methods:  
- ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  optionsSuccessStatus: 200  
+  origin: "*", // Retirer le slash à la fin
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 200, // Répondre avec un statut 200 pour les requêtes OPTIONS (prévol)
 }));
 
 const readData = () => {
@@ -100,7 +99,6 @@ app.post("/possession", (req, res) => {
   res.status(201).json(newPossession);
 });
 
-
 app.put("/possession/:id", (req, res) => {
   const { id } = req.params;
   const updateFields = req.body;
@@ -146,7 +144,7 @@ app.put("/possession/:id/close", (req, res) => {
 
     if (possession) {
       possession.dateFin = new Date().toISOString().split("T")[0];
-      writeData(data); 
+      writeData(data);
       res.status(200).json(possession);
     } else {
       res

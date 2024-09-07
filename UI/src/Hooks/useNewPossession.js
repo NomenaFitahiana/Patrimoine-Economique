@@ -3,6 +3,8 @@ import Flux from  "../../models/possessions/Flux";
 import Possession from  "../../models/possessions/Possession";
 import Argent from  "../../models/possessions/Argent";
 
+const apiURL = import.meta.env.VITE_URL_API 
+
 export default function useNewPossesion() {
   const [tab, setTab] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -12,7 +14,12 @@ export default function useNewPossesion() {
   const [currentPossession, setCurrentPossession] = useState(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_URL_API }/possession`)
+    fetch(`${apiURL }/possession`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
       .then((result) => {
         if (!result.ok) {
           throw new Error("Erreur de réseau " + result.status);
@@ -131,7 +138,7 @@ export default function useNewPossesion() {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split("T")[0];
 
-    fetch(`${import.meta.env.VITE_URL_API }/possession/${id}`, {
+    fetch(`${apiURL }/possession/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
