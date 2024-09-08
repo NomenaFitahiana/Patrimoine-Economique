@@ -12,7 +12,7 @@ const path = "./data.json";
 app.use(express.json());
 
 app.use(cors({
-  origin: "*", // Retirer le slash à la fin
+  origin: "https://patrimoine-ui-0xpz.onrender.com", // Retirer le slash à la fin
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   optionsSuccessStatus: 200, // Répondre avec un statut 200 pour les requêtes OPTIONS (prévol)
